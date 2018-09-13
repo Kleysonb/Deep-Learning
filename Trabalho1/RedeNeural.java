@@ -5,7 +5,7 @@ public class RedeNeural {
     // Amostras de Treinamento
     private double X[][];
     // Saída para cada amostra
-    private double classe[];
+    private double classe[][];
 
     // Matriz de Pesos entre a camada de entrada e a camada oculta
     private double PesoEntradaOculta[][];
@@ -45,7 +45,7 @@ public class RedeNeural {
     // Erro Total
     // private double erroTotal;
 
-    RedeNeural(double X[][], double classe[], double taxa_aprendizagem, double theta, double elasticidade,
+    RedeNeural(double X[][], double classe[][], double taxa_aprendizagem, double theta, double elasticidade,
             int qtdEntradas, int qtdNeuroniosOculta, int qtdNeuroniosSaida, int iteracao) {
 
         this.X = X;
@@ -79,18 +79,14 @@ public class RedeNeural {
         for (int neuronioOculto = 0; neuronioOculto < this.qtdNeuroniosOculta; neuronioOculto++) {
             for (int entrada = 0; entrada < this.qtdEntradas; entrada++) {
                 this.PesoEntradaOculta[neuronioOculto][entrada] = this.fRandom(-1, 1);
-                // this.PesoEntradaOculta[neuronioOculto][entrada] = 0;
             }
         }
 
         for (int neuronioSaida = 0; neuronioSaida < this.qtdNeuroniosSaida; neuronioSaida++) {
             for (int neuronioOculto = 0; neuronioOculto < this.qtdNeuroniosOculta; neuronioOculto++) {
                 this.PesoOcultaSaida[neuronioSaida][neuronioOculto] = this.fRandom(-1, 1);
-                // this.PesoOcultaSaida[neuronioSaida][neuronioOculto] = 0;
             }
         }
-
-        // this.mostrarPesos();
     }
 
     private double fRandom(int min, int max) {
@@ -99,24 +95,44 @@ public class RedeNeural {
 
     public void aprendizagem() {
         System.out.println("Antes da Aprendizagem...");
-        for (int amostra = 0; amostra < this.X.length; amostra++) {
-            this.ForwardTeste(amostra);
-        }
+        
+        this.ForwardTeste(0);
+        this.ForwardTeste(1000);
+        this.ForwardTeste(2000);
+        this.ForwardTeste(3000);
+        this.ForwardTeste(4000);
+        this.ForwardTeste(5000);
+        this.ForwardTeste(6000);
+        this.ForwardTeste(7000);
+        this.ForwardTeste(8000);
+        this.ForwardTeste(9000);
+
+        // for (int amostra = 0; amostra < 3; amostra++) {
+        //     this.ForwardTeste(amostra);
+        // }
         for (int itera = 0; itera < this.iteracao; itera++) {
-            // System.out.println((itera + 1) + "/" + this.iteracao);
+            System.out.println((itera+1)+"/"+this.iteracao);
             for (int amostra = 0; amostra < this.X.length; amostra++) {
                 this.Forward(amostra);
                 this.Backward(amostra);
-                // System.out.println();
-                // this.mostrarPesos();
             }
-            // this.mostrarErroTotal();
         }
         System.out.println("\nDepois da Aprendizagem...");
-        for (int amostra = 0; amostra < this.X.length; amostra++) {
-            this.ForwardTeste(amostra);
-        }
-        // this.mostrarPesos();
+        
+        this.ForwardTeste(0);
+        this.ForwardTeste(1000);
+        this.ForwardTeste(2000);
+        this.ForwardTeste(3000);
+        this.ForwardTeste(4000);
+        this.ForwardTeste(5000);
+        this.ForwardTeste(6000);
+        this.ForwardTeste(7000);
+        this.ForwardTeste(8000);
+        this.ForwardTeste(9000);
+
+        // for (int amostra = 0; amostra < 3; amostra++) {
+        //     this.ForwardTeste(amostra);
+        // }
     }
 
     public void mostrarErroTotal() {
@@ -151,32 +167,27 @@ public class RedeNeural {
         for (int neuronioOculto = 0; neuronioOculto < this.qtdNeuroniosOculta; neuronioOculto++) {
             this.EntradaOculta[neuronioOculto] = Neuronio.Propagacao(this.X[amostra],
                     this.PesoEntradaOculta[neuronioOculto]);
-
             aux = Neuronio.tanh(this.EntradaOculta[neuronioOculto]);
-            // System.out.println(aux);
             if (aux > 0)
                 this.SaidaOculta[neuronioOculto] = 1;
             else
                 this.SaidaOculta[neuronioOculto] = -1;
-
-            // System.out.println(this.SaidaOculta[neuronioOculto]);
         }
 
         // Calculando Entrada e Saída da Camada de Saída
+        System.out.println();
         for (int neuronioSaida = 0; neuronioSaida < this.qtdNeuroniosSaida; neuronioSaida++) {
             this.EntradaSaida[neuronioSaida] = Neuronio.Propagacao(this.SaidaOculta,
                     this.PesoOcultaSaida[neuronioSaida]);
             aux = Neuronio.tanh(this.EntradaSaida[neuronioSaida]);
             if (aux > 0) {
                 this.SaidaFinal[neuronioSaida] = 1;
-                System.out.println("VERDADEIRO");
+                System.out.println("VERDADEIRO ");
             } else {
                 this.SaidaFinal[neuronioSaida] = -1;
-                System.out.println("FALSO");
+                System.out.println("FALSO ");
             }
-
         }
-
     }
 
     private void Forward(int amostra) {
@@ -188,13 +199,10 @@ public class RedeNeural {
                     this.PesoEntradaOculta[neuronioOculto]);
 
             aux = Neuronio.tanh(this.EntradaOculta[neuronioOculto]);
-            // System.out.println(aux);
             if (aux > 0)
                 this.SaidaOculta[neuronioOculto] = 1;
             else
                 this.SaidaOculta[neuronioOculto] = -1;
-
-            // System.out.println(this.SaidaOculta[neuronioOculto]);
         }
 
         // Calculando Entrada e Saída da Camada de Saída
@@ -216,9 +224,6 @@ public class RedeNeural {
             for (int neuronioOculto = 0; neuronioOculto < this.qtdNeuroniosOculta; neuronioOculto++) {
                 this.PesoOcultaSaida[neuronioSaida][neuronioOculto] += (this.taxa_aprendizagem
                         * this.SigmaSaida[neuronioSaida] * this.SaidaOculta[neuronioOculto]);
-                // this.PesoOcultaSaida[neuronioSaida][neuronioOculto] +=
-                // (this.taxa_aprendizagem
-                // * this.SigmaSaida[neuronioSaida]);
             }
         }
 
@@ -228,8 +233,6 @@ public class RedeNeural {
             for (int entrada = 0; entrada < this.qtdEntradas; entrada++) {
                 this.PesoEntradaOculta[neuronioOculto][entrada] += (this.taxa_aprendizagem
                         * this.SigmaOculto[neuronioOculto] * this.X[amostra][entrada]);
-                // this.PesoEntradaOculta[neuronioOculto][entrada] += (this.taxa_aprendizagem
-                // * this.SigmaOculto[neuronioOculto]);
             }
         }
     }
@@ -240,28 +243,24 @@ public class RedeNeural {
             sigmaOculta += (this.SigmaSaida[neuronioSaida] * this.PesoOcultaSaida[neuronioSaida][neuronio]);
         }
         sigmaOculta *= Neuronio.derivadaTanh(this.EntradaOculta[neuronio]) * -1;
-        // sigmaOculta *= Neuronio.derivadaSigmoid(this.EntradaOculta[neuronio],
-        // this.elasticidade, this.theta);
         return sigmaOculta;
     }
 
     private double calcularSigma(int amostra, int neuronio) {
-        return (this.classe[amostra] - this.SaidaFinal[neuronio])
+        return (this.classe[amostra][neuronio] - this.SaidaFinal[neuronio])
                 * (Neuronio.derivadaTanh(this.EntradaSaida[neuronio]));
-        // return (this.classe[amostra] - this.SaidaFinal[neuronio]);
     }
 
-    public static void main(String[] args) {
-        double VERDADEIRO = 1;
-        double NEUTRO = 0.0;
-        double FALSO = -1;
+    // public static void main(String[] args) {
+    //     double VERDADEIRO = 1;
+    //     double NEUTRO = 0.0;
+    //     double FALSO = -1;
 
-        double amostras[][] = { { FALSO, FALSO, 1 }, { FALSO, VERDADEIRO, 1 }, { VERDADEIRO, FALSO, 1 },
-                { VERDADEIRO, VERDADEIRO, 1 } };
-        double classes[] = { FALSO, VERDADEIRO, VERDADEIRO, FALSO };
-        // double classes[] = { FALSO, FALSO, FALSO, VERDADEIRO };
+    //     double amostras[][] = { { FALSO, FALSO, 1 }, { FALSO, VERDADEIRO, 1 }, { VERDADEIRO, FALSO, 1 },
+    //             { VERDADEIRO, VERDADEIRO, 1 } };
+    //     double classes[] = { FALSO, VERDADEIRO, VERDADEIRO, FALSO };
 
-        RedeNeural redeNeural = new RedeNeural(amostras, classes, 0.02, 1, 2, 3, 4, 1, 10000);
-        redeNeural.aprendizagem();
-    }
+    //     RedeNeural redeNeural = new RedeNeural(amostras, classes, 0.02, 1, 2, 3, 4, 1, 10000);
+    //     redeNeural.aprendizagem();
+    // }
 }

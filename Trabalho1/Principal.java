@@ -7,16 +7,8 @@ import java.io.FileReader;
 
 public class Principal {
 
-    // private int[][] matrizPixels;
-
-    // private void imagemMatriz(File arquivo) throws IOException {
-    // BufferedImage image = ImageIO.read(arquivo);
-    // this.matrizPixels = GetPixels.gerarMatrizPixel(image);
-    // int[][] matrizBinaria = GetPixels.converterParaBinaria(image,
-    // this.matrizPixels);
-    // int[] vetorImagem = GetPixels.matrizParaVetor(matrizBinaria);
-    // GetPixels.escreverVetor(vetorImagem);
-    // }
+    public double[][] entradas;
+    public double[][] classe;
 
     private void popularTxt(String pasta) throws IOException {
         File imagens[] = GetPixels.visualizarArquivos(pasta);
@@ -31,64 +23,87 @@ public class Principal {
         }
     }
 
-    private double[][] recuperarEntradas() throws IOException{
-        BufferedReader br = new BufferedReader(new FileReader("dataset/treino.txt"));
-        double[][] entradas = new double[2000][784];
+    private void recuperarEntradas() throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader("dataset/treinamento.txt"));
+        this.entradas = new double[10000][784];
+        this.classe = new double[10000][9];
+
         int cont = 0;
+        int flag;
         while (br.ready()) {
             String linha = br.readLine();
-            double aux[] = new double[784];
-            for (int caractere = 0; caractere < linha.length(); caractere += 2) {
-                aux[caractere] = Double.parseDouble(Character.toString(linha.charAt(caractere)));
+            flag = 0;
+            for (int caractere = 0; caractere < linha.length(); caractere++) {
+                if (linha.charAt(caractere) == '1') {
+                    this.entradas[cont][flag] = -1;
+                    flag++;
+                } else {
+                    if (linha.charAt(caractere) == '0') {
+                        this.entradas[cont][flag] = 1;
+                        flag++;
+                    }
+                }
             }
-            entradas[cont] = aux;
+
+            if (cont < 1000) {
+                double aux[] = { 1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+                this.classe[cont] = aux;
+            } else {
+                if (cont < 2000) {
+                    double aux[] = { -1, 1, -1, -1, -1, -1, -1, -1, -1, -1 };
+                    this.classe[cont] = aux;
+                } else {
+                    if (cont < 3000) {
+                        double aux[] = { -1, -1, 1, -1, -1, -1, -1, -1, -1, -1 };
+                        this.classe[cont] = aux;
+                    } else {
+                        if (cont < 4000) {
+                            double aux[] = { -1, -1, -1, 1, -1, -1, -1, -1, -1, -1 };
+                            this.classe[cont] = aux;
+                        } else {
+                            if (cont < 5000) {
+                                double aux[] = { -1, -1, -1, -1, 1, -1, -1, -1, -1, -1 };
+                                this.classe[cont] = aux;
+                            } else {
+                                if (cont < 6000) {
+                                    double aux[] = { -1, -1, -1, -1, -1, 1, -1, -1, -1, -1 };
+                                    this.classe[cont] = aux;
+                                } else {
+                                    if (cont < 7000) {
+                                        double aux[] = { -1, -1, -1, -1, -1, -1, 1, -1, -1, -1 };
+                                        this.classe[cont] = aux;
+                                    } else {
+                                        if (cont < 8000) {
+                                            double aux[] = { -1, -1, -1, -1, -1, -1, -1, 1, -1, -1 };
+                                            this.classe[cont] = aux;
+                                        } else {
+                                            if (cont < 9000) {
+                                                double aux[] = { -1, -1, -1, -1, -1, -1, -1, -1, 1, -1 };
+                                                this.classe[cont] = aux;
+                                            } else {
+                                                if (cont < 10000) {
+                                                    double aux[] = { -1, -1, -1, -1, -1, -1, -1, -1, -1, 1 };
+                                                    this.classe[cont] = aux;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            cont++;
         }
         br.close();
-        return entradas;
     }
 
-    public static void main(String[] args) throws IOException{
-        Principal p = new Principal();
+    public static void main(String[] args) throws IOException {
+        Principal principal = new Principal();
+        principal.recuperarEntradas();
 
-        BPN2 rede = new BPN2(784, 392, 1, 0.2, 1, 2);
-        int iteracao = 2; // inicializando a itereacao com 2
-        rede.ErroTotal = 1; // inicializando o erro total com 1
-
-        double[][] entradas = p.recuperarEntradas();
-        double targets[][] = new double[2000][1];
-        for (int i = 0; i < 2000; i++) {
-            if (i < 1000) {
-                double aux[] = { 0 };
-                targets[i] = aux;
-            } else {
-                double aux[] = { 1 };
-                targets[i] = aux;
-            }
-        }
-
-        while (iteracao < 1 && rede.ErroTotal > 0.002) {
-            iteracao = iteracao + 1; // incrementando a iteracao
-            rede.aprendizado(entradas[iteracao % entradas.length], targets[iteracao % entradas.length]);
-        }
-
-        // i - Nomero de Neuronios da Camada de Entrada
-        // h - Nomero de Neuronios da Camada Escondida
-        // o - Nomero de Neuronios da Camada de Saoda
-        // ei - Taxa de Aprendizado
-        // th - Limiar
-        // el - Elasticidade
-
-        // try {
-        // // Lendo um arquivo
-        // // File imagem = new File("../mnist_png-master/mnist_png/training/0/1.png");
-        // // p.imagemMatriz(imagem);
-        // // GetPixels.visualizarArquivos();
-        // // p.popularTxt("9");
-
-        // } catch (IOException e) {
-        // System.err.println("Erro");
-        // System.out.println(e.getMessage());
-        // }
-
+        RedeNeural rn = new RedeNeural(principal.entradas, principal.classe, 0.2, 1, 1, 784, 16, 10, 10000);
+        rn.aprendizagem();
     }
 }
